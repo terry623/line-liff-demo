@@ -26,13 +26,11 @@ const Home: NextPage<{ liff: Liff | null; liffError: string | null }> = ({
             </p>
           </>
         )}
-        <a
-          href="https://developers.line.biz/ja/docs/liff/"
-          target="_blank"
-          rel="noreferrer"
-        >
-          LIFF Documentation
-        </a>
+        <div>
+          <div>isLogin: {liff?.isLoggedIn() ? "true" : "false"}</div>
+          <div>OS: {liff?.getOS()}</div>
+          <div>Language: {liff?.getLanguage()}</div>
+        </div>
       </main>
     </div>
   );
