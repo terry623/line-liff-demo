@@ -4,5 +4,11 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+}
+
+.pictureUrl {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin-top: 8px;
 }
