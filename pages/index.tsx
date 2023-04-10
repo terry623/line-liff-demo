@@ -93,6 +93,10 @@ const Home: NextPage<{ liff: Liff | null; liffError: string | null }> = ({
             {liff?.isLoggedIn() ? (
               <button
                 onClick={() => {
+                  // reload after logout.
+                  setTimeout(() => {
+                    location.reload();
+                  }, 1000);
                   liff?.logout();
                 }}
               >
