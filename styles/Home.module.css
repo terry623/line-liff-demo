@@ -12,3 +12,10 @@
   border-radius: 50%;
   margin-top: 8px;
 }
+
+.buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 8px;
+  padding: 8px;
+}

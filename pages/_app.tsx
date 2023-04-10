@@ -3,6 +3,8 @@ import type { AppProps } from "next/app";
 import { useState, useEffect } from "react";
 import { Liff } from "@line/liff/exports";
 
+const liffId = process.env.NEXT_PUBLIC_LIFF_ID!;
+
 function MyApp({ Component, pageProps }: AppProps) {
   const [liffObject, setLiffObject] = useState<Liff | null>(null);
   const [liffError, setLiffError] = useState<string | null>(null);
@@ -13,10 +15,11 @@ function MyApp({ Component, pageProps }: AppProps) {
     import("@line/liff")
       .then((liff) => liff.default)
       .then((liff) => {
-        console.log(process.env.NEXT_PUBLIC_LIFF_ID);
+        console.log(liffId);
         console.log("LIFF init...");
+
         liff
-          .init({ liffId: process.env.NEXT_PUBLIC_LIFF_ID! })
+          .init({ liffId })
           .then(() => {
             console.log("LIFF init succeeded.");
             setLiffObject(liff);

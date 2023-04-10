@@ -6,8 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "deploy": "next build && next export && netlify deploy --dir out --prod"
+    "lint": "next lint"
   },
   "dependencies": {
     "@line/liff": "2.22.0",

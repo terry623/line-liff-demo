@@ -3,7 +3,6 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import { useEffect, useState } from "react";
-import Image from "next/image";
 
 type Profile = {
   userId: string;
@@ -12,11 +11,16 @@ type Profile = {
   statusMessage?: string;
 };
 
+interface Friendship {
+  friendFlag: boolean;
+}
+
 const Home: NextPage<{ liff: Liff | null; liffError: string | null }> = ({
   liff,
   liffError,
 }) => {
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [friendFlag, setFriendFlag] = useState<Friendship | null>(null);
   const [url, setUrl] = useState<string | null>("?");
 
   useEffect(() => {
@@ -24,8 +28,17 @@ const Home: NextPage<{ liff: Liff | null; liffError: string | null }> = ({
 
     liff
       .getProfile()
-      .then((profile) => {
-        setProfile(profile);
+      .then((result) => {
+        setProfile(result);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+
+    liff
+      .getFriendship()
+      .then((result) => {
+        setFriendFlag(result);
       })
       .catch((err) => {
         console.error(err);
@@ -40,37 +53,60 @@ const Home: NextPage<{ liff: Liff | null; liffError: string | null }> = ({
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        {liff && <p>LIFF init succeeded.</p>}
+        {liff && <p>LIFF init succeeded</p>}
         {liffError && (
           <>
-            <p>LIFF init failed.</p>
+            <p>LIFF init failed</p>
             <p>
               <code>{liffError}</code>
             </p>
           </>
         )}
+        <p>
+          You are in{" "}
+          {liff?.isInClient() ? "a liff browser" : "an external browser"}
+        </p>
         <div>
+          <h4>Info</h4>
           <div>Is Login: {liff?.isLoggedIn() ? "true" : "false"}</div>
           <div>OS: {liff?.getOS()}</div>
           <div>Language: {liff?.getLanguage()}</div>
           <div>Line Liff Version: {liff?.getVersion()}</div>
           <div>Line Version: {liff?.getLineVersion()}</div>
+          <div>Is friend: {friendFlag?.friendFlag ? "true" : "false"}</div>
           <br />
           <div>
-            Profile
+            <h4>Profile</h4>
             <div>userId: {profile?.userId}</div>
             <div>displayName: {profile?.displayName}</div>
             <div>statusMessage: {profile?.statusMessage}</div>
-            <img
-              src={
-                "https://profile.line-scdn.net/0hteEdVHMZK0poHTku57tVNRhNKCBLbHJYTH1tKVoYJi0BK2oZEygzL1QZcS0BeD8ZFH1kKV9IdH9kDlwsdkvXfm8tdX1RKmgdTXlkqw"
-              }
-              alt="pictureUrl"
-              className={styles.pictureUrl}
-            />
+            {profile?.pictureUrl && (
+              <img
+                src={profile?.pictureUrl}
+                alt="pictureUrl"
+                className={styles.pictureUrl}
+              />
+            )}
           </div>
           <br />
-          <div>
+          <div className={styles.buttons}>
+            {liff?.isLoggedIn() ? (
+              <button
+                onClick={() => {
+                  liff?.logout();
+                }}
+              >
+                Logout
+              </button>
+            ) : (
+              <button
+                onClick={() => {
+                  liff?.login();
+                }}
+              >
+                Login
+              </button>
+            )}
             <button
               onClick={() => {
                 liff
