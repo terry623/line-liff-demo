@@ -176,7 +176,7 @@ const Home: NextPage<Props> = ({ liff, liffError }) => {
             <button
               onClick={async () => {
                 try {
-                  let res = await fetch("http://localhost:3000/api/code", {
+                  let res = await fetch("/api/code", {
                     method: "POST",
                     body: JSON.stringify({
                       userId: profile?.userId,
