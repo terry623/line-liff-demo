@@ -15,7 +15,6 @@ function MyApp({ Component, pageProps }: AppProps) {
     import("@line/liff")
       .then((liff) => liff.default)
       .then((liff) => {
-        console.log(liffId);
         console.log("LIFF init...");
 
         liff

@@ -3,6 +3,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import { useEffect, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 type Profile = {
   userId: string;
@@ -11,14 +12,16 @@ type Profile = {
   statusMessage?: string;
 };
 
-interface Friendship {
+type Friendship = {
   friendFlag: boolean;
-}
+};
 
-const Home: NextPage<{ liff: Liff | null; liffError: string | null }> = ({
-  liff,
-  liffError,
-}) => {
+type Props = {
+  liff: Liff | null;
+  liffError: string | null;
+};
+
+const Home: NextPage<Props> = ({ liff, liffError }) => {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [friendFlag, setFriendFlag] = useState<Friendship | null>(null);
   const [url, setUrl] = useState<string | null>("?");
@@ -62,18 +65,19 @@ const Home: NextPage<{ liff: Liff | null; liffError: string | null }> = ({
             </p>
           </>
         )}
-        <p>
-          You are in{" "}
-          {liff?.isInClient() ? "a liff browser" : "an external browser"}
-        </p>
         <div>
-          <h4>Info</h4>
-          <div>Is Login: {liff?.isLoggedIn() ? "true" : "false"}</div>
-          <div>OS: {liff?.getOS()}</div>
-          <div>Language: {liff?.getLanguage()}</div>
-          <div>Line Liff Version: {liff?.getVersion()}</div>
-          <div>Line Version: {liff?.getLineVersion()}</div>
-          <div>Is friend: {friendFlag?.friendFlag ? "true" : "false"}</div>
+          <div>
+            <h4>Info</h4>
+            <div>Is Login: {liff?.isLoggedIn() ? "true" : "false"}</div>
+            <div>OS: {liff?.getOS()}</div>
+            <div>Language: {liff?.getLanguage()}</div>
+            <div>In Liff browser: {liff?.isInClient() ? "true" : "false"}</div>
+            <div>Line Liff Version: {liff?.getVersion()}</div>
+            <div>Line Version: {liff?.getLineVersion()}</div>
+            <div>
+              Is OA&apos;s Friend: {friendFlag?.friendFlag ? "true" : "false"}
+            </div>
+          </div>
           <br />
           <div>
             <h4>Profile</h4>
@@ -89,6 +93,7 @@ const Home: NextPage<{ liff: Liff | null; liffError: string | null }> = ({
             )}
           </div>
           <br />
+          <h4>Actions</h4>
           <div className={styles.buttons}>
             {liff?.isLoggedIn() ? (
               <button
@@ -111,25 +116,6 @@ const Home: NextPage<{ liff: Liff | null; liffError: string | null }> = ({
                 Login
               </button>
             )}
-            <button
-              onClick={() => {
-                liff
-                  ?.sendMessages([
-                    {
-                      type: "text",
-                      text: "Hello, World!",
-                    },
-                  ])
-                  .then(() => {
-                    alert("Message sent");
-                  })
-                  .catch((err) => {
-                    alert(err);
-                  });
-              }}
-            >
-              Send messages
-            </button>
             <button
               onClick={() => {
                 liff?.openWindow({
@@ -187,11 +173,29 @@ const Home: NextPage<{ liff: Liff | null; liffError: string | null }> = ({
             >
               Scan QR code
             </button>
+            <button
+              onClick={async () => {
+                try {
+                  let res = await fetch("http://localhost:3000/api/code", {
+                    method: "POST",
+                    body: JSON.stringify({
+                      userId: profile?.userId,
+                      code: uuidv4(),
+                    }),
+                  });
+                  res = await res.json();
+                  alert("Create code success");
+                } catch (error) {
+                  alert("Create code fail");
+                }
+              }}
+            >
+              Create Code
+            </button>
           </div>
           <br />
-          <div>
-            <div>Scan result: {url}</div>
-          </div>
+          <div>Scan result: {url}</div>
+          <br />
         </div>
       </main>
     </div>
