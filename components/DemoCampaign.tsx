@@ -1,7 +1,7 @@
 import { createInvitationCode, getInvitationCode } from "../utils/code";
 import { useCallback, useEffect, useState } from "react";
 import { useLiffContext } from "../context/LiffContext";
-import { ProfileProps } from "./Profile";
+import type { ProfileProps } from "../types";
 
 const DemoCampaign = ({ profile }: { profile?: ProfileProps }) => {
   const [invitationCode, setInvitationCode] = useState<string>();

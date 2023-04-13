@@ -1,11 +1,5 @@
 import styles from "../styles/Home.module.css";
-
-export type ProfileProps = {
-  userId: string;
-  displayName: string;
-  pictureUrl?: string;
-  statusMessage?: string;
-};
+import type { ProfileProps } from "../types";
 
 const Profile = ({ profile }: { profile?: ProfileProps }) => {
   return (

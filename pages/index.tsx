@@ -2,11 +2,12 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import Info from "../components/Info";
-import Profile, { ProfileProps } from "../components/Profile";
+import Profile from "../components/Profile";
 import Actions from "../components/Actions";
 import { useLiffContext } from "../context/LiffContext";
 import { useEffect, useState } from "react";
 import DemoCampaign from "../components/DemoCampaign";
+import type { ProfileProps } from "../types";
 
 const Home: NextPage = () => {
   const { liff, liffError } = useLiffContext();
