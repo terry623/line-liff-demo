@@ -1,14 +1,40 @@
 import { createInvitationCode, getInvitationCode } from "../utils/code";
 import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import { useLiffContext } from "../context/LiffContext";
 import type { ProfileProps } from "../types";
+import { createRelation } from "../utils/relation";
 
 const DemoCampaign = ({ profile }: { profile?: ProfileProps }) => {
   const [invitationCode, setInvitationCode] = useState<string>();
+  const [inverterInfo, setInverterInfo] = useState<{
+    id: string;
+    name: string;
+    code: string;
+  }>();
   const { liff } = useLiffContext();
+  const { query } = useRouter();
 
   const userId = profile?.userId;
   const displayName = profile?.displayName;
+
+  useEffect(() => {
+    if (query.code && userId) {
+      const code = query.code as string;
+      createRelation({ userId, code })
+        .then((res: any) => {
+          console.log(res);
+          setInverterInfo({
+            id: res.inviterId,
+            name: res.inviterName,
+            code: res.code,
+          });
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }
+  }, [query.code, userId]);
 
   const getOrCreateInvitationCode = useCallback(async () => {
     if (!userId || !displayName) {
@@ -18,7 +44,7 @@ const DemoCampaign = ({ profile }: { profile?: ProfileProps }) => {
     }
 
     let code;
-    code = await getInvitationCode({ userId, displayName });
+    code = await getInvitationCode({ userId });
 
     if (!code) {
       code = await createInvitationCode({
@@ -37,7 +63,7 @@ const DemoCampaign = ({ profile }: { profile?: ProfileProps }) => {
     if (!context) return;
 
     const { liffId } = context;
-    const text = `hey, here’s an invite to special campaign. https://liff.line.me/${liffId}?invitationCode=${invitationCode}`;
+    const text = `hey, here’s an invite to special campaign. https://liff.line.me/${liffId}?code=${invitationCode}`;
 
     liff
       ?.shareTargetPicker([
@@ -68,8 +94,10 @@ const DemoCampaign = ({ profile }: { profile?: ProfileProps }) => {
   return (
     <div>
       <h4>Demo Campaign</h4>
-      <div>Invitation Code: {invitationCode}</div>
-      <button onClick={shareLink}>Share your link</button>
+      <div>You are invited by: {inverterInfo?.name}</div>
+      <div>Inviter&apos;s code is {inverterInfo?.code}</div>
+      <div>Your invitation code: {invitationCode}</div>
+      <button onClick={shareLink}>Invite your friends</button>
     </div>
   );
 };

@@ -1,15 +1,8 @@
 import { v4 as uuidv4 } from "uuid";
 
-type Props = {
-  userId: string;
-  displayName: string;
-};
-
-const getInvitationCode = async (props: Props) => {
+const getInvitationCode = async (props: { userId: string }) => {
   try {
-    const response = await fetch(
-      `/api/code?userId=${props.userId}&displayName=${props.displayName}`
-    );
+    const response = await fetch(`/api/code?userId=${props.userId}`);
     const data = await response.json();
 
     return data;
@@ -18,10 +11,13 @@ const getInvitationCode = async (props: Props) => {
   }
 };
 
-const createInvitationCode = async (props: Props) => {
-  const code = uuidv4();
-
+const createInvitationCode = async (props: {
+  userId: string;
+  displayName: string;
+}) => {
   try {
+    const code = uuidv4();
+
     await fetch("/api/code", {
       method: "POST",
       body: JSON.stringify({
