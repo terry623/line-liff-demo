@@ -5,7 +5,6 @@ const Info = () => {
   const [friendship, setFriendship] = useState<{
     friendFlag: boolean;
   }>();
-  const [currentUrl, setCurrentUrl] = useState<string>("");
   const { liff } = useLiffContext();
 
   useEffect(() => {
@@ -21,10 +20,6 @@ const Info = () => {
       });
   }, [liff]);
 
-  useEffect(() => {
-    setCurrentUrl(window.location.href);
-  }, []);
-
   return (
     <div>
       <h4>Info</h4>
@@ -37,7 +32,6 @@ const Info = () => {
       <div>
         Is OA&apos;s Friend: {friendship?.friendFlag ? "true" : "false"}
       </div>
-      <div>Current URL: {currentUrl}</div>
     </div>
   );
 };
