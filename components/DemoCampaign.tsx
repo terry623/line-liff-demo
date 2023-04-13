@@ -82,12 +82,11 @@ const DemoCampaign = ({ profile }: { profile?: ProfileProps }) => {
   }, [userId, displayName]);
 
   const shareLink = useCallback(() => {
-    if (!liff) return;
-
-    const context = liff.getContext();
+    const context = liff?.getContext();
     if (!context) return;
 
     const { liffId } = context;
+    if (!liffId) return;
     const text = `hey, here’s an invite to special campaign. https://liff.line.me/${liffId}?code=${invitationCode}`;
 
     liff
