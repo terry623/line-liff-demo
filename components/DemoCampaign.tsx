@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useLiffContext } from "../context/LiffContext";
 import type { ProfileProps } from "../types";
-import { createRelation } from "../utils/relation";
+import { createRelation, getRelation } from "../utils/relation";
 
 const DemoCampaign = ({ profile }: { profile?: ProfileProps }) => {
   const [invitationCode, setInvitationCode] = useState<string>();
@@ -15,11 +15,13 @@ const DemoCampaign = ({ profile }: { profile?: ProfileProps }) => {
   const { liff } = useLiffContext();
   const { query } = useRouter();
 
-  const userId = profile?.userId;
-  const displayName = profile?.displayName;
+  const userId = profile?.userId || "12312312312";
+  const displayName = profile?.displayName || "asasdf";
 
   useEffect(() => {
-    if (query.code && userId) {
+    if (!userId) return;
+
+    if (query.code) {
       const code = query.code as string;
       createRelation({ userId, code })
         .then((res: any) => {
@@ -33,6 +35,16 @@ const DemoCampaign = ({ profile }: { profile?: ProfileProps }) => {
         .catch((err) => {
           console.error(err);
         });
+
+      return;
+    } else {
+      getRelation({ userId }).then((res: any) => {
+        setInverterInfo({
+          id: res.inviterId,
+          name: res.inviterName,
+          code: res.code,
+        });
+      });
     }
   }, [query.code, userId]);
 
@@ -94,8 +106,9 @@ const DemoCampaign = ({ profile }: { profile?: ProfileProps }) => {
   return (
     <div>
       <h4>Demo Campaign</h4>
-      <div>You are invited by: {inverterInfo?.name}</div>
+      <div>You are invited by {inverterInfo?.name}</div>
       <div>Inviter&apos;s code is {inverterInfo?.code}</div>
+      <br />
       <div>Your invitation code: {invitationCode}</div>
       <button onClick={shareLink}>Invite your friends</button>
     </div>

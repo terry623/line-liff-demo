@@ -37,5 +37,17 @@ export default async function handler(
       res.json(data);
 
       break;
+    case "GET":
+      const result = await db
+        .collection("relations")
+        .find({
+          inviteeId: req.query.userId,
+        })
+        .sort({ _id: -1 })
+        .limit(1)
+        .toArray();
+      res.json(result[0]);
+
+      break;
   }
 }

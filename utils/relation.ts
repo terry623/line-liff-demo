@@ -1,9 +1,15 @@
-type Props = {
-  userId: string;
-  code: string;
+const getRelation = async (props: { userId: string }) => {
+  try {
+    const response = await fetch(`/api/relation?userId=${props.userId}`);
+    const data = await response.json();
+
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
 };
 
-const createRelation = async (props: Props) => {
+const createRelation = async (props: { userId: string; code: string }) => {
   try {
     const res = await fetch("/api/relation", {
       method: "POST",
@@ -17,4 +23,4 @@ const createRelation = async (props: Props) => {
   }
 };
 
-export { createRelation };
+export { getRelation, createRelation };
