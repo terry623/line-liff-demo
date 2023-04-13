@@ -17,6 +17,7 @@ const createRelation = async (props: { userId: string; code: string }) => {
     });
 
     const data = await res.json();
+
     return data;
   } catch (error) {
     console.error(error);

@@ -2,6 +2,12 @@ import type { NextApiRequest, NextApiResponse } from "next";
 
 import clientPromise from "../../lib/mongodb";
 
+export type Codes = {
+  userId: string;
+  displayName: string;
+  code: string;
+};
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -12,13 +18,13 @@ export default async function handler(
   switch (req.method) {
     case "POST":
       let bodyObject = JSON.parse(req.body);
-      const code = await db.collection("codes").insertOne(bodyObject);
+      const code = await db.collection<Codes>("codes").insertOne(bodyObject);
       res.json(code);
 
       break;
     case "GET":
       const result = await db
-        .collection("codes")
+        .collection<Codes>("codes")
         .find({
           userId: req.query.userId,
         })

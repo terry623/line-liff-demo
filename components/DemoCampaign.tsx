@@ -29,8 +29,6 @@ const DemoCampaign = ({ profile }: { profile?: ProfileProps }) => {
   useEffect(() => {
     if (!userId) return;
 
-    console.log(query.code);
-
     if (query.code) {
       const code = query.code as string;
       createRelation({ userId, code })
