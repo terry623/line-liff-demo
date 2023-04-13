@@ -3,7 +3,11 @@ import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useLiffContext } from "../context/LiffContext";
 import type { ProfileProps } from "../types";
-import { createRelation, getRelation } from "../utils/relation";
+import {
+  createRelation,
+  getRelation,
+  getRelationsCount,
+} from "../utils/relation";
 
 const DemoCampaign = ({ profile }: { profile?: ProfileProps }) => {
   const [invitationCode, setInvitationCode] = useState<string>();
@@ -12,11 +16,12 @@ const DemoCampaign = ({ profile }: { profile?: ProfileProps }) => {
     name: string;
     code: string;
   }>();
+  const [invitedCount, setInvitedCount] = useState<number>(0);
   const { liff } = useLiffContext();
   const { query } = useRouter();
 
-  const userId = profile?.userId || "12312312312";
-  const displayName = profile?.displayName || "asasdf";
+  const userId = profile?.userId;
+  const displayName = profile?.displayName;
 
   useEffect(() => {
     if (!userId) return;
@@ -47,6 +52,14 @@ const DemoCampaign = ({ profile }: { profile?: ProfileProps }) => {
       });
     }
   }, [query.code, userId]);
+
+  useEffect(() => {
+    if (!userId) return;
+
+    getRelationsCount({ userId }).then((res: any) => {
+      setInvitedCount(res.length);
+    });
+  }, [userId]);
 
   const getOrCreateInvitationCode = useCallback(async () => {
     if (!userId || !displayName) {
@@ -106,11 +119,12 @@ const DemoCampaign = ({ profile }: { profile?: ProfileProps }) => {
   return (
     <div>
       <h4>Demo Campaign</h4>
-      <div>You are invited by {inverterInfo?.name}</div>
+      <div>Invited by {inverterInfo?.name}</div>
       <div>Inviter&apos;s code is {inverterInfo?.code}</div>
       <br />
       <div>Your invitation code: {invitationCode}</div>
-      <button onClick={shareLink}>Invite your friends</button>
+      <div>Already invited {invitedCount} peoples</div>
+      <button onClick={shareLink}>Invite friends</button>
     </div>
   );
 };
