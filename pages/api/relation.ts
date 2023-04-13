@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
-import clientPromise from "../../../lib/mongodb";
+import clientPromise from "../../lib/mongodb";
 
 export default async function handler(
   req: NextApiRequest,
@@ -10,7 +10,7 @@ export default async function handler(
   const db = client.db("invitationCodes");
 
   switch (req.method) {
-    case "POST":
+    case "POST": {
       let bodyObject = JSON.parse(req.body);
       const { userId, code } = bodyObject;
       const inviter = await db
@@ -34,11 +34,25 @@ export default async function handler(
       };
 
       await db.collection("relations").insertOne(data);
-      res.json(data);
+
+      const invitees = await db
+        .collection("relations")
+        .find({
+          inviterId: userId,
+        })
+        .toArray();
+
+      res.json({
+        inviterId: inviter[0].userId,
+        inviterName: inviter[0].displayName,
+        inviterCode: inviter[0].code,
+        inviteeCount: invitees.length,
+      });
 
       break;
-    case "GET":
-      const result = await db
+    }
+    case "GET": {
+      const inviter = await db
         .collection("relations")
         .find({
           inviteeId: req.query.userId,
@@ -46,8 +60,22 @@ export default async function handler(
         .sort({ _id: -1 })
         .limit(1)
         .toArray();
-      res.json(result[0]);
+
+      const invitees = await db
+        .collection("relations")
+        .find({
+          inviterId: req.query.userId,
+        })
+        .toArray();
+
+      res.json({
+        inviterId: inviter[0]?.userId,
+        inviterName: inviter[0]?.displayName,
+        inviterCode: inviter[0]?.code,
+        inviteeCount: invitees.length,
+      });
 
       break;
+    }
   }
 }

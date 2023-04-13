@@ -3,11 +3,14 @@ import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useLiffContext } from "../context/LiffContext";
 import type { ProfileProps } from "../types";
-import {
-  createRelation,
-  getRelation,
-  getRelationsCount,
-} from "../utils/relation";
+import { createRelation, getRelation } from "../utils/relation";
+
+type Relation = {
+  inviterId: string;
+  inviterName: string;
+  inviterCode: string;
+  inviteeCount: number;
+};
 
 const DemoCampaign = ({ profile }: { profile?: ProfileProps }) => {
   const [invitationCode, setInvitationCode] = useState<string>();
@@ -26,16 +29,18 @@ const DemoCampaign = ({ profile }: { profile?: ProfileProps }) => {
   useEffect(() => {
     if (!userId) return;
 
+    console.log(query.code);
+
     if (query.code) {
       const code = query.code as string;
       createRelation({ userId, code })
-        .then((res: any) => {
-          console.log(res);
+        .then((res: Relation) => {
           setInverterInfo({
             id: res.inviterId,
             name: res.inviterName,
-            code: res.code,
+            code: res.inviterCode,
           });
+          setInvitedCount(res.inviteeCount);
         })
         .catch((err) => {
           console.error(err);
@@ -43,23 +48,16 @@ const DemoCampaign = ({ profile }: { profile?: ProfileProps }) => {
 
       return;
     } else {
-      getRelation({ userId }).then((res: any) => {
+      getRelation({ userId }).then((res: Relation) => {
         setInverterInfo({
           id: res.inviterId,
           name: res.inviterName,
-          code: res.code,
+          code: res.inviterCode,
         });
+        setInvitedCount(res.inviteeCount);
       });
     }
   }, [query.code, userId]);
-
-  useEffect(() => {
-    if (!userId) return;
-
-    getRelationsCount({ userId }).then((res: any) => {
-      setInvitedCount(res.length);
-    });
-  }, [userId]);
 
   const getOrCreateInvitationCode = useCallback(async () => {
     if (!userId || !displayName) {

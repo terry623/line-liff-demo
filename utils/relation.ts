@@ -9,17 +9,6 @@ const getRelation = async (props: { userId: string }) => {
   }
 };
 
-const getRelationsCount = async (props: { userId: string }) => {
-  try {
-    const response = await fetch(`/api/relation/count?userId=${props.userId}`);
-    const data = await response.json();
-
-    return data;
-  } catch (error) {
-    console.error(error);
-  }
-};
-
 const createRelation = async (props: { userId: string; code: string }) => {
   try {
     const res = await fetch("/api/relation", {
@@ -34,4 +23,4 @@ const createRelation = async (props: { userId: string; code: string }) => {
   }
 };
 
-export { getRelation, getRelationsCount, createRelation };
+export { getRelation, createRelation };
