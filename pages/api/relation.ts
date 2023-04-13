@@ -29,7 +29,7 @@ export default async function handler(
         .toArray();
 
       if (codeInfo.length === 0) {
-        res.status(400).json({ message: "Invalid code" });
+        res.status(400).json({ message: "Invalid invitation code" });
 
         return;
       }
@@ -54,7 +54,7 @@ export default async function handler(
         inviterId: codeInfo[0].userId,
         inviterName: codeInfo[0].displayName,
         inviterCode: codeInfo[0].code,
-        inviteeCount: invitees.length,
+        inviteeCount: invitees.length || 0,
       });
 
       break;
@@ -80,7 +80,7 @@ export default async function handler(
         inviterId: inviter[0]?.inviterId,
         inviterName: inviter[0]?.inviterName,
         inviterCode: inviter[0]?.code,
-        inviteeCount: invitees.length,
+        inviteeCount: invitees.length || 0,
       });
 
       break;

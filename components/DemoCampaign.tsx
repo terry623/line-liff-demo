@@ -41,7 +41,7 @@ const DemoCampaign = ({ profile }: { profile?: ProfileProps }) => {
           setInvitedCount(res.inviteeCount);
         })
         .catch((err) => {
-          console.error(err);
+          alert(err);
         });
 
       return;
@@ -59,7 +59,7 @@ const DemoCampaign = ({ profile }: { profile?: ProfileProps }) => {
 
   const getOrCreateInvitationCode = useCallback(async () => {
     if (!userId || !displayName) {
-      console.error("No userId or displayName");
+      alert("No userId or displayName");
 
       return;
     }
