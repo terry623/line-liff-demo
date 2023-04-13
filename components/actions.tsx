@@ -1,10 +1,10 @@
 import styles from "../styles/Home.module.css";
-import { v4 as uuidv4 } from "uuid";
-import { Liff } from "@line/liff/exports";
 import { useState } from "react";
+import { useLiffContext } from "../context/LiffContext";
 
-const Actions = ({ liff, userId }: { liff: Liff | null; userId?: string }) => {
+const Actions = () => {
   const [url, setUrl] = useState<string>("?");
+  const { liff } = useLiffContext();
 
   return (
     <>
@@ -89,25 +89,6 @@ const Actions = ({ liff, userId }: { liff: Liff | null; userId?: string }) => {
           }}
         >
           Scan QR code
-        </button>
-        <button
-          onClick={async () => {
-            try {
-              let res = await fetch("/api/code", {
-                method: "POST",
-                body: JSON.stringify({
-                  userId,
-                  code: uuidv4(),
-                }),
-              });
-              res = await res.json();
-              alert("Create invitation code success");
-            } catch (error) {
-              alert("Create invitation code fail");
-            }
-          }}
-        >
-          Create invitation code
         </button>
       </div>
       <div>Scan result: {url}</div>

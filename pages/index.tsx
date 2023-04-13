@@ -1,20 +1,16 @@
-import { Liff } from "@line/liff/exports";
 import type { NextPage } from "next";
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
+import Info from "../components/Info";
+import Profile, { ProfileProps } from "../components/Profile";
+import Actions from "../components/Actions";
+import { useLiffContext } from "../context/LiffContext";
 import { useEffect, useState } from "react";
-import Info from "../components/info";
-import Profile, { ProfileProps } from "../components/profile";
-import Actions from "../components/actions";
+import DemoCampaign from "../components/DemoCampaign";
 
-const Home: NextPage<{
-  liff: Liff | null;
-  liffError: string | null;
-}> = ({ liff, liffError }) => {
+const Home: NextPage = () => {
+  const { liff, liffError } = useLiffContext();
   const [profile, setProfile] = useState<ProfileProps>();
-  const [friendship, setFriendship] = useState<{
-    friendFlag: boolean;
-  }>();
 
   useEffect(() => {
     if (!liff) return;
@@ -27,21 +23,12 @@ const Home: NextPage<{
       .catch((err) => {
         console.error(err);
       });
-
-    liff
-      .getFriendship()
-      .then((result) => {
-        setFriendship(result);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
   }, [liff]);
 
   return (
     <div>
       <Head>
-        <title>LIFF App</title>
+        <title>Dcard Demo App</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -56,9 +43,10 @@ const Home: NextPage<{
           </>
         )}
         <div>
-          <Info liff={liff} friendFlag={!!friendship?.friendFlag} />
+          <DemoCampaign profile={profile} />
+          <Info />
           <Profile profile={profile} />
-          <Actions liff={liff} userId={profile?.userId} />
+          <Actions />
         </div>
       </main>
     </div>

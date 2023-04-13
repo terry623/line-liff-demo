@@ -8,16 +8,25 @@ export default async function handler(
 ) {
   const client = await clientPromise;
   const db = client.db("invitationCodes");
+
   switch (req.method) {
     case "POST":
       let bodyObject = JSON.parse(req.body);
-      let codes = await db.collection("codes").insertOne(bodyObject);
-      res.json(codes);
+      const code = await db.collection("codes").insertOne(bodyObject);
+      res.json(code);
 
       break;
     case "GET":
-      const response = await db.collection("codes").find({}).toArray();
-      res.json({ status: 200, data: response });
+      const result = await db
+        .collection("codes")
+        .find({
+          userId: req.query.userId,
+        })
+        .sort({ _id: -1 })
+        .limit(1)
+        .toArray();
+      res.json(result[0]?.code);
+
       break;
   }
 }
