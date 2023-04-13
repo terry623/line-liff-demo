@@ -59,8 +59,6 @@ const DemoCampaign = ({ profile }: { profile?: ProfileProps }) => {
 
   const getOrCreateInvitationCode = useCallback(async () => {
     if (!userId || !displayName) {
-      alert("No userId or displayName");
-
       return;
     }
 
