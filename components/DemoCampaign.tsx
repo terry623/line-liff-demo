@@ -36,8 +36,8 @@ const DemoCampaign = ({ profile }: { profile?: ProfileProps }) => {
     const context = liff.getContext();
     if (!context) return;
 
-    const { endpointUrl } = context;
-    const text = `hey, here’s an invite to special campaign. ${endpointUrl}?invitationCode=${invitationCode}`;
+    const { liffId } = context;
+    const text = `hey, here’s an invite to special campaign. https://liff.line.me/${liffId}?invitationCode=${invitationCode}`;
 
     liff
       ?.shareTargetPicker([

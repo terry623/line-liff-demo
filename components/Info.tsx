@@ -5,6 +5,7 @@ const Info = () => {
   const [friendship, setFriendship] = useState<{
     friendFlag: boolean;
   }>();
+  const [currentUrl, setCurrentUrl] = useState<string>("");
   const { liff } = useLiffContext();
 
   useEffect(() => {
@@ -20,10 +21,15 @@ const Info = () => {
       });
   }, [liff]);
 
+  useEffect(() => {
+    setCurrentUrl(window.location.href);
+  }, []);
+
   return (
     <div>
       <h4>Info</h4>
       <div>Is Login: {liff?.isLoggedIn() ? "true" : "false"}</div>
+      <div>Current URL: {currentUrl}</div>
       <div>OS: {liff?.getOS()}</div>
       <div>Language: {liff?.getLanguage()}</div>
       <div>In Liff browser: {liff?.isInClient() ? "true" : "false"}</div>
