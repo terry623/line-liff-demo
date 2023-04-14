@@ -1,5 +1,6 @@
 const getRelation = async (props: { userId: string }) => {
   const res = await fetch(`/api/relation?userId=${props.userId}`);
+
   const data = await res.json();
 
   if (!res.ok) {
@@ -14,6 +15,7 @@ const createRelation = async (props: { userId: string; code: string }) => {
     method: "POST",
     body: JSON.stringify(props),
   });
+
   const data = await res.json();
 
   if (!res.ok) {

@@ -1,5 +1,6 @@
 const getInvitationCode = async (props: { userId: string }) => {
   const res = await fetch(`/api/code?userId=${props.userId}`);
+
   const data = await res.json();
 
   if (!res.ok) {
