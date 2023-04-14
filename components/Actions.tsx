@@ -57,7 +57,7 @@ const Actions = () => {
                   text: "Hello, World!",
                 },
               ])
-              .then(function (res) {
+              .then((res) => {
                 if (res) {
                   // succeeded in sending a message through TargetPicker
                   alert(`[${res.status}] Message sent!`);

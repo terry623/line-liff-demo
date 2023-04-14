@@ -1,14 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
 import clientPromise from "../../lib/mongodb";
-import { Codes } from "./code";
-
-type Relations = {
-  inviteeId: string;
-  inviterId: string;
-  inviterName: string;
-  code: string;
-};
+import type { Code, RelationInfo, Relation } from "../../types";
+import { ErrorCode } from "../../constants";
 
 export default async function handler(
   req: NextApiRequest,
@@ -22,46 +16,50 @@ export default async function handler(
       let bodyObject = JSON.parse(req.body);
       const { userId, code } = bodyObject;
       const codeInfo = await db
-        .collection<Codes>("codes")
+        .collection<Code>("codes")
         .find({ code })
         .sort({ _id: -1 })
         .limit(1)
         .toArray();
 
       if (codeInfo.length === 0) {
-        res.status(400).json({ message: "Invalid invitation code" });
+        res.status(400).json({ error: ErrorCode.InvalidCode });
 
         return;
       }
 
-      const data = {
+      const data: Relation = {
         inviteeId: userId,
         inviterId: codeInfo[0].userId,
         inviterName: codeInfo[0].displayName,
-        code,
+        inviterCode: code,
       };
 
-      await db.collection<Relations>("relations").insertOne(data);
+      await db.collection<Relation>("relations").insertOne(data);
 
       const invitees = await db
-        .collection<Relations>("relations")
+        .collection<Relation>("relations")
         .find({
           inviterId: userId,
         })
         .toArray();
 
-      res.json({
-        inviterId: codeInfo[0].userId,
-        inviterName: codeInfo[0].displayName,
-        inviterCode: codeInfo[0].code,
+      const body: RelationInfo = {
+        inviterInfo: {
+          id: codeInfo[0].userId,
+          name: codeInfo[0].displayName,
+          code: code,
+        },
         inviteeCount: invitees.length || 0,
-      });
+      };
+
+      res.json(body);
 
       break;
     }
     case "GET": {
       const inviter = await db
-        .collection<Relations>("relations")
+        .collection<Relation>("relations")
         .find({
           inviteeId: req.query.userId,
         })
@@ -70,18 +68,25 @@ export default async function handler(
         .toArray();
 
       const invitees = await db
-        .collection<Relations>("relations")
+        .collection<Relation>("relations")
         .find({
           inviterId: req.query.userId,
         })
         .toArray();
 
-      res.json({
-        inviterId: inviter[0]?.inviterId,
-        inviterName: inviter[0]?.inviterName,
-        inviterCode: inviter[0]?.code,
+      const body: RelationInfo = {
+        inviterInfo:
+          inviter.length !== 0
+            ? {
+                id: inviter[0].inviterId,
+                name: inviter[0].inviterName,
+                code: inviter[0].inviterCode,
+              }
+            : undefined,
         inviteeCount: invitees.length || 0,
-      });
+      };
+
+      res.json(body);
 
       break;
     }

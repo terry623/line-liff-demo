@@ -3,7 +3,7 @@ const getRelation = async (props: { userId: string }) => {
   const data = await res.json();
 
   if (!res.ok) {
-    throw new Error(data.message);
+    throw new Error(data.error);
   }
 
   return data;
@@ -14,11 +14,10 @@ const createRelation = async (props: { userId: string; code: string }) => {
     method: "POST",
     body: JSON.stringify(props),
   });
-
   const data = await res.json();
 
   if (!res.ok) {
-    throw new Error(data.message);
+    throw new Error(data.error);
   }
 
   return data;

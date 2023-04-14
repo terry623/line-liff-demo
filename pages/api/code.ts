@@ -1,12 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import { v4 as uuidv4 } from "uuid";
 
 import clientPromise from "../../lib/mongodb";
-
-export type Codes = {
-  userId: string;
-  displayName: string;
-  code: string;
-};
+import type { Code } from "../../types";
+import { ErrorCode } from "../../constants";
 
 export default async function handler(
   req: NextApiRequest,
@@ -18,20 +15,28 @@ export default async function handler(
   switch (req.method) {
     case "POST":
       let bodyObject = JSON.parse(req.body);
-      const code = await db.collection<Codes>("codes").insertOne(bodyObject);
-      res.json(code);
+      const code = uuidv4();
+      await db.collection<Code>("codes").insertOne({ ...bodyObject, code });
+      res.json({ code });
 
       break;
     case "GET":
       const result = await db
-        .collection<Codes>("codes")
+        .collection<Code>("codes")
         .find({
           userId: req.query.userId,
         })
         .sort({ _id: -1 })
         .limit(1)
         .toArray();
-      res.json(result[0]?.code);
+
+      if (result.length === 0) {
+        res.status(404).json({ error: ErrorCode.CodeNotFound });
+
+        return;
+      }
+
+      res.json({ code: result[0].code });
 
       break;
   }

@@ -36,9 +36,9 @@ export function LiffContextProvider({ children }: { children: ReactNode }) {
             console.log("LIFF init succeeded.");
             setLiffObject(liff);
           })
-          .catch((error: Error) => {
+          .catch((err: Error) => {
             console.log("LIFF init failed.");
-            setLiffError(error.toString());
+            setLiffError(err.toString());
           });
       });
   }, []);

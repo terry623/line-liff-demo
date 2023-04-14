@@ -4,15 +4,9 @@ import { useRouter } from "next/router";
 import { useLiffContext } from "../context/LiffContext";
 import type { ProfileProps } from "../types";
 import { createRelation, getRelation } from "../utils/relation";
+import { ErrorCode } from "../constants";
 
-type Relation = {
-  inviterId: string;
-  inviterName: string;
-  inviterCode: string;
-  inviteeCount: number;
-};
-
-const DemoCampaign = ({ profile }: { profile?: ProfileProps }) => {
+const DemoCampaign = ({ profile }: { profile: ProfileProps }) => {
   const [invitationCode, setInvitationCode] = useState<string>();
   const [inverterInfo, setInverterInfo] = useState<{
     id: string;
@@ -23,8 +17,7 @@ const DemoCampaign = ({ profile }: { profile?: ProfileProps }) => {
   const { liff } = useLiffContext();
   const { query } = useRouter();
 
-  const userId = profile?.userId;
-  const displayName = profile?.displayName;
+  const { userId, displayName } = profile;
 
   useEffect(() => {
     if (!userId) return;
@@ -32,13 +25,16 @@ const DemoCampaign = ({ profile }: { profile?: ProfileProps }) => {
     if (query.code) {
       const code = query.code as string;
       createRelation({ userId, code })
-        .then((res: Relation) => {
-          setInverterInfo({
-            id: res.inviterId,
-            name: res.inviterName,
-            code: res.inviterCode,
-          });
+        .then((res) => {
           setInvitedCount(res.inviteeCount);
+
+          if (!res.inviterInfo) return;
+
+          setInverterInfo({
+            id: res.inviterInfo.id,
+            name: res.inviterInfo.name,
+            code: res.inviterInfo.code,
+          });
         })
         .catch((err) => {
           alert(err);
@@ -46,13 +42,16 @@ const DemoCampaign = ({ profile }: { profile?: ProfileProps }) => {
 
       return;
     } else {
-      getRelation({ userId }).then((res: Relation) => {
-        setInverterInfo({
-          id: res.inviterId,
-          name: res.inviterName,
-          code: res.inviterCode,
-        });
+      getRelation({ userId }).then((res) => {
         setInvitedCount(res.inviteeCount);
+
+        if (!res.inviterInfo) return;
+
+        setInverterInfo({
+          id: res.inviterInfo.id,
+          name: res.inviterInfo.name,
+          code: res.inviterInfo.code,
+        });
       });
     }
   }, [query.code, userId]);
@@ -62,17 +61,16 @@ const DemoCampaign = ({ profile }: { profile?: ProfileProps }) => {
       return;
     }
 
-    let code;
-    code = await getInvitationCode({ userId });
-
-    if (!code) {
-      code = await createInvitationCode({
-        userId,
-        displayName,
-      });
+    try {
+      const { code } = await getInvitationCode({ userId });
+      setInvitationCode(code);
+    } catch (err: unknown) {
+      if (!(err instanceof Error)) return;
+      if (err.message === ErrorCode.CodeNotFound) {
+        const { code } = await createInvitationCode({ userId, displayName });
+        setInvitationCode(code);
+      }
     }
-
-    setInvitationCode(code);
   }, [userId, displayName]);
 
   const shareLink = useCallback(() => {

@@ -8,10 +8,11 @@ import { useLiffContext } from "../context/LiffContext";
 import { useEffect, useState } from "react";
 import DemoCampaign from "../components/DemoCampaign";
 import type { ProfileProps } from "../types";
+import { getDefaultProfile } from "../utils/user";
 
 const Home: NextPage = () => {
   const { liff, liffError } = useLiffContext();
-  const [profile, setProfile] = useState<ProfileProps>();
+  const [profile, setProfile] = useState<ProfileProps>(getDefaultProfile());
 
   useEffect(() => {
     if (!liff) return;
