@@ -1,11 +1,11 @@
 const getDefaultProfile = () => {
   if (process.env.NODE_ENV === "development")
     return {
-      userId: "5555555sadfasdfsadf",
-      displayName: "林敏皓",
+      userId: "12345",
+      displayName: "Mario",
       pictureUrl:
-        "https://profile.line-scdn.net/0hteEdVHMZK0poHTku57tVNRhNKCBLbHJYTH1tKVoYJi0BK2oZEygzL1QZcS0BeD8ZFH1kKV9IdH9kDlwsdkvXfm8tdX1RKmgdTXlkqw",
-      statusMessage: "Hello World！",
+        "https://www.lego.com/cdn/cs/catalog/assets/bltb074ba96ec9d66cd/1/MarioIcon.png",
+      statusMessage: "Woo-hoo, let's-a go!",
     };
 
   return {
