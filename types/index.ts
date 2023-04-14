@@ -26,3 +26,7 @@ export type RelationInfo = {
   };
   inviteeCount: number;
 };
+
+export type CodeInfo = {
+  code: string;
+};
