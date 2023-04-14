@@ -14,6 +14,7 @@ const DemoCampaign = ({ profile }: { profile: ProfileProps }) => {
     code: string;
   }>();
   const [invitedCount, setInvitedCount] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const { liff } = useLiffContext();
   const { query } = useRouter();
 
@@ -57,6 +58,8 @@ const DemoCampaign = ({ profile }: { profile: ProfileProps }) => {
   }, [query.code, userId]);
 
   const getOrCreateInvitationCode = useCallback(async () => {
+    setIsLoading(true);
+
     if (!userId || !displayName) {
       return;
     }
@@ -71,6 +74,8 @@ const DemoCampaign = ({ profile }: { profile: ProfileProps }) => {
         setInvitationCode(code);
       }
     }
+
+    setIsLoading(false);
   }, [userId, displayName]);
 
   const shareLink = useCallback(() => {
@@ -110,12 +115,18 @@ const DemoCampaign = ({ profile }: { profile: ProfileProps }) => {
   return (
     <div>
       <h4>Demo Campaign</h4>
-      <div>Invited by {inverterInfo?.name}</div>
-      <div>Inviter&apos;s code is {inverterInfo?.code}</div>
-      <br />
-      <div>Your invitation code: {invitationCode}</div>
-      <div>Already invited {invitedCount} peoples</div>
-      <button onClick={shareLink}>Invite friends</button>
+      {isLoading ? (
+        <div>Loading...</div>
+      ) : (
+        <>
+          <div>Invited by {inverterInfo?.name}</div>
+          <div>Inviter&apos;s code is {inverterInfo?.code}</div>
+          <br />
+          <div>Your invitation code: {invitationCode}</div>
+          <div>Already invited {invitedCount} peoples</div>
+          <button onClick={shareLink}>Invite friends</button>
+        </>
+      )}
     </div>
   );
 };
