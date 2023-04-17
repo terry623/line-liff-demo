@@ -23,8 +23,8 @@ const DemoCampaign = ({ profile }: { profile: ProfileProps }) => {
   useEffect(() => {
     if (!userId) return;
 
-    if (query.code) {
-      const code = query.code as string;
+    if (query.invitationCode) {
+      const code = query.invitationCode as string;
       createRelation({ userId, code })
         .then((res) => {
           setInvitedCount(res.inviteeCount);
@@ -55,7 +55,7 @@ const DemoCampaign = ({ profile }: { profile: ProfileProps }) => {
         });
       });
     }
-  }, [query.code, userId]);
+  }, [query.invitationCode, userId]);
 
   const getOrCreateInvitationCode = useCallback(async () => {
     setIsLoading(true);
@@ -84,7 +84,7 @@ const DemoCampaign = ({ profile }: { profile: ProfileProps }) => {
 
     const { liffId } = context;
     if (!liffId) return;
-    const text = `hey, here’s an invite to special campaign. https://liff.line.me/${liffId}?code=${invitationCode}`;
+    const text = `hey, here’s an invite to special campaign. https://liff.line.me/${liffId}?invitationCode=${invitationCode}`;
 
     liff
       ?.shareTargetPicker([
