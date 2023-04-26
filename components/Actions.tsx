@@ -34,7 +34,7 @@ const Actions = () => {
         <button
           onClick={() => {
             liff?.openWindow({
-              url: "https://www.dcard.tw/f",
+              url: "https://www.google.com/",
               external: true,
             });
           }}
