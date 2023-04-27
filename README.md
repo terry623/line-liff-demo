@@ -2,7 +2,7 @@
 
 Demo URL：https://liff.line.me/1660790386-ez8vylrR
 
-This is a web page designed for a viral marketing campaign on Line, a popular messaging app in Asia. The page is gamified and encourages users to share the campaign with their Line friends in order to increase its reach and engagement.
+A web page designed for a viral marketing campaign on Line, a popular messaging app in Asia. The page is gamified and encourages users to share the campaign with their Line friends in order to increase its reach and engagement.
 
 ### Introduction
 
